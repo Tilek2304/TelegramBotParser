@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 from bs4 import Tag, ResultSet
 from settings import URL
 import datetime
+import json
 
 x = str(datetime.datetime.now())
 now_date = x[0:-16]

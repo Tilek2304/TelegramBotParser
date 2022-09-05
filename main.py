@@ -1,4 +1,4 @@
-
+import json
 from socket import htonl
 import telebot
 from parseFile import get_news_list, parse_news_page
@@ -18,15 +18,21 @@ def start(message):
             bot.send_message(message.chat.id,"some title news you can see Description of this news and Photo", parse_mode='html')
             return None
 
-@bot.message_handler
+@bot.message_handler()
 def get_news_num(message):
     for i in get_news_list():
-        if message.text == i.get('id'):
-            html = parse_news_page(i.get('link'))
-            bot.send_message(message.chat.id, html, parse_mode='html')
-        else:
-            bot.send_message(message.chat.id, 'нет такой новости', parse_mode='html')
-            return None
-
+        # print(i['id'])
+        if message.text == i['id']:
+            html = parse_news_page(i['link'])
+            text = ''
+            for i in html:
+                string = i.find_all('p')
+                for j in string:
+                    text += j.text
+                bot.send_message(message.chat.id, text, parse_mode='html')
+                string = j.find_all('img', class_='Gallery--single-image-img ls-is-cached lazyloaded')
+                for k in string:
+                    bot.send_message(message.chat.id, k.get('src'), parse_mode='html')
+    return None
 
 bot.polling(non_stop=True)
